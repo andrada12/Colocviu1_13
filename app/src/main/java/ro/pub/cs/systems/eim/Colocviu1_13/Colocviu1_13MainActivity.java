@@ -89,6 +89,8 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(Constants.BUTOANE_APASATE_NUMAR)) {
                 butoaneApasateNumar =savedInstanceState.getInt(Constants.BUTOANE_APASATE_NUMAR);
+                Toast.makeText( this, "Numar butoane apasate: " + butoaneApasateNumar, Toast.LENGTH_LONG ).show();
+
             } else {
                 butoaneApasateNumar = 0;
             }
