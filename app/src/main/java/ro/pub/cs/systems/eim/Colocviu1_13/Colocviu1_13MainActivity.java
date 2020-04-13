@@ -33,6 +33,19 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
 
     private int butoaneApasateNumar = 0;
 
+
+
+    private NavigateToSecondaryActivityClickListener navigateToSecondaryActivityClickListener = new NavigateToSecondaryActivityClickListener();
+    private class NavigateToSecondaryActivityClickListener implements  View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(), Colocviu1_13SecondaryActivity.class);
+            intent.putExtra(Constants.CARDINALS, buttonsPressed.getText().toString());
+            startActivityForResult(intent, Constants.SECONDARY_ACTIVITY_REQUEST_CODE);
+        }
+    }
+
+
     private CardinalsButtonClickListener cardinalsButtonClickListener = new CardinalsButtonClickListener();
 
     private class CardinalsButtonClickListener implements  View.OnClickListener {
@@ -81,7 +94,7 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
         south = findViewById(R.id.south_button);
         south.setOnClickListener(cardinalsButtonClickListener);
         navigate = findViewById(R.id.navigate_button);
-
+        navigate.setOnClickListener(navigateToSecondaryActivityClickListener);
         buttonsPressed = findViewById(R.id.button_pressed_edit_text);
 
 
@@ -103,6 +116,13 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt(Constants.BUTOANE_APASATE_NUMAR, butoaneApasateNumar);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == Constants.SECONDARY_ACTIVITY_REQUEST_CODE) {
+            Toast.makeText(this, "The activity returned with result " + resultCode, Toast.LENGTH_LONG).show();
+        }
     }
 
 
