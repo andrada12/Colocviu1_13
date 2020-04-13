@@ -33,6 +33,20 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
 
     private int butoaneApasateNumar = 0;
 
+    final public static int SERVICE_STOPPED = 0;
+    final public static int SERVICE_STARTED = 1;
+    private int serviceStatus = SERVICE_STOPPED;
+
+    private IntentFilter intentFilter = new IntentFilter();
+
+
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(Constants.BROADCAST_RECEIVER_TAG, intent.getStringExtra(Constants.BROADCAST_RECEIVER_EXTRA));
+        }
+    }
 
 
     private NavigateToSecondaryActivityClickListener navigateToSecondaryActivityClickListener = new NavigateToSecondaryActivityClickListener();
@@ -75,7 +89,13 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
                     butoaneApasateNumar++;
                     break;
             }
-
+            if (butoaneApasateNumar >=4
+                    && serviceStatus == SERVICE_STOPPED) {
+                Intent intent = new Intent(getApplicationContext(), Colocviu1_13Service.class);
+                intent.putExtra(Constants.CARDINAL_LIST, buttonsPressed.getText().toString());
+                getApplicationContext().startService(intent);
+                serviceStatus = SERVICE_STARTED;
+            }
         }
     }
 
@@ -110,6 +130,14 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
         } else {
             butoaneApasateNumar = 0;
         }
+
+
+
+        for (int index = 0; index < Constants.actionTypes.length; index++) {
+            intentFilter.addAction(Constants.actionTypes[index]);
+        }
+
+
     }
 
     @Override
@@ -125,6 +153,25 @@ public class Colocviu1_13MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, Colocviu1_13Service.class);
+        stopService(intent);
+        super.onDestroy();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
+    }
 
 
 }
